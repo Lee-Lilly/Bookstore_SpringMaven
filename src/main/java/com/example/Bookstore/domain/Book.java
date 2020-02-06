@@ -1,25 +1,51 @@
 package com.example.Bookstore.domain;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "books") //database name corresponding to this Entity
 public class Book {
-
-	@NotNull
-	@Size(min=2, max=30)
+	@Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY) 
+    private Long id;
+	
 	private String title;
+	private String author;
+
+	@Column(unique =true)
+	private String isbn;  
+	private Integer year;
 	
-	@NotNull
-	@Size(min=2, max=30)
-	private Contributor[] contributors;
+	@ManyToOne
+    @JoinColumn(name="category_id")
 	
-	@NotNull
-	@Size(min=2, max=30)
-	private String isbn;
+	private Category category;
 	
-	@NotNull
-	@Size(min=2, max=30)
-	private Float price;
+	public Book() {}
+	
+	public Book(String title, String author, String isbn, Category category, Integer year) {
+		super();
+		this.title = title;		
+		this.author = author;
+		this.isbn = isbn;
+		this.category= category;
+		this.year = year;				
+	}
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 	public String getTitle() {
 		return title;
@@ -28,12 +54,12 @@ public class Book {
 		return isbn;
 	}
 	
-	public Float getPrice() {
-		return price;
+	public Integer getYear() {
+		return year;
 	}
 	
-	public Contributor[] getContributors(){
-		return contributors;
+	public String getAuthor(){
+		return author;
 	}
 	
 	public void setTitle(String title) {
@@ -44,15 +70,31 @@ public class Book {
 		this.isbn = isbn;
 	}
 	
-	public void setPrice(Float price) {
-		this.price = price;
+	public void setYear(Integer year) {
+		this.year = year;
 	}
 	
-	public void setContributors(Contributor[] contributors) {
-		this.contributors = contributors;
+	public void setAuthor(String author) {
+		this.author = author;
 	}
-
-
 	
+	public Category getCategory() {
+		return category;
+	}
+	
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+	
+	@Override
+	public String toString() {
+		if (this.category != null) {
+			return "Book [id=" + id + ", Title= " + title + ", Author= " + author + ", ISBN= " + isbn + ", Category= " + category.getName() + ", Year= " + year + "]";
+		}
+		else {
+			return "Book [id=" + id + ", Title= " + title + ", Author= " + author + ", ISBN= " + isbn + ", Year= " + year + "]";
+		}
+	
+	}	
 	
 }
