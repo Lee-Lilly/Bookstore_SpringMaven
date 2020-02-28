@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "books") //database name corresponding to this Entity
 public class Book {
@@ -24,6 +26,7 @@ public class Book {
 	private Integer year;
 	
 	@ManyToOne
+	@JsonIgnore
     @JoinColumn(name="category_id")
 	
 	private Category category;
