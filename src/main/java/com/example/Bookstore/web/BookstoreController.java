@@ -36,10 +36,11 @@ public class BookstoreController {
 	}
 	
 	// RESTful service to get book by id
-    @RequestMapping(value="/book/{id}", method = RequestMethod.GET)
+    @RequestMapping(value="/books/{id}", method = RequestMethod.GET)
     public @ResponseBody Optional<Book> findBookRest(@PathVariable("id") Long bookId){
     	return bookRepository.findById(bookId);
     }
+   
 		
 	// Add new book	with existing category drop down list ordered by category name
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
