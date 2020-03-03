@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <title>New Book Store</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -10,6 +10,10 @@
     <h1 class="text-center"> Welcome to New Book Store!</h1>
     <br>
     <div class="container"> 
+    	<h3 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>		    
+	    <form th:action="@{/logout}" method="post">
+			<input type="submit" class="btn btn-success" value="Sign Out"/>
+		</form>		        	
 	    <table  class= "table table-striped table-bordered text-center table-responsive" id="booklist">
 	    	<thead>
 				<tr>
@@ -30,12 +34,12 @@
 		    		<td th:text="${book.isbn}"></td>
 		    		<td th:text=${book.category.name}></td>
 		    		<td th:text="${book.year}"></td>
-		 			<td><a th:href="@{/delete/{id}(id=${book.id})}" class="btn btn-danger"  data-toggle="tooltip" title="Delete"><i class="fas fa-trash-alt"></i></a></td>
+		 			<td sec:authorize="hasRole('ADMIN')"><a th:href="@{/delete/{id}(id=${book.id})}" class="btn btn-danger"  data-toggle="tooltip" title="Delete"><i class="fas fa-trash-alt"></i></a></td>
 		 			<td><a th:href="@{/edit/{id}(id=${book.id})}" class="btn btn-info" data-toggle="tooltip" title="Edit"><i class="fas fa-edit"></i></a></td>	    		
 		    	</tr>
 	    	</tbody> 	
 	     </table>
-     <a href="/add" class="btn btn-success">Add Book</a>   	   
+	   <a href="/add" class="btn btn-success">Add Book</a>   		  
 	</div>
 </body>
 </html>

@@ -1,5 +1,7 @@
 package com.example.Bookstore.web;
 
+import com.example.Bookstore.domain.*;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,8 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import com.example.Bookstore.domain.*;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @Controller
 public class BookstoreController {
@@ -40,8 +41,7 @@ public class BookstoreController {
     public @ResponseBody Optional<Book> findBookRest(@PathVariable("id") Long bookId){
     	return bookRepository.findById(bookId);
     }
-   
-		
+   		
 	// Add new book	with existing category drop down list ordered by category name
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addBook(Model model){
@@ -65,6 +65,7 @@ public class BookstoreController {
  
     //Delete a book record
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('ADMIN')") //"delete" method must have authentication of "ADMIN"
     public String deleteBook(@PathVariable("id") Long bookId, Model model) {
     	bookRepository.deleteById(bookId);
         return "redirect:../bookstore";
@@ -77,4 +78,5 @@ public class BookstoreController {
     	model.addAttribute("categories", categoryRepository.findByOrderByNameAsc());
         return "editbook";
     }
+    
 }
