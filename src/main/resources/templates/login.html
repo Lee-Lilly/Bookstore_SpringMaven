@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>Welcome</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/0fa32f6844.js"></script>
+</head>
+<body>
+	    <h1 class="text-center"> Welcome to New Book Store!</h1>
+	   	<br>
+	   	<div class="container">		     	        	
+		   <div class="col-md-6 col-md-offset-6">
+	        <div class="alert alert-danger" th:if="${param.error}">
+	            Invalid username and password.
+	        </div>
+	        <div class="alert alert-warning" th:if="${param.logout}">
+	            You have been logged out.
+	        </div>
+	        <form th:action="@{/login}" method="post">
+	            <div><label> User Name : <input type="text" name="username" class="form-control"/> </label></div>
+	            <div><label> Password: <input type="password" name="password" class="form-control"/> </label></div>
+	            <div><input type="submit" value="Sign In" class="btn btn-primary"/></div>
+	        </form>
+	        <br>
+	        <p>Do not have an account? 
+		   		<a href="/signup" class="btn btn-success" style="float:right">Sign-up</a>
+		   </p>  
+	  	 </div>
+	</div>
+</body>
+</html>

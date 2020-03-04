@@ -20,7 +20,7 @@ public class BookstoreApplication {
 	
 	@SuppressWarnings("unused")
 	@Bean
-	public CommandLineRunner bookStore(BookRepository bookRepository, CategoryRepository categoryRepository) {
+	public CommandLineRunner bookStore(BookRepository bookRepository, CategoryRepository categoryRepository, UserRepository userRepository) {
 		return (args) -> {
 			log.info("give a couple of categories");
 			Category category_Travel= categoryRepository.save(new Category("Travel"));
@@ -54,6 +54,20 @@ public class BookstoreApplication {
 			for (Book book : bookRepository.findAll()) {
 				log.info(book.toString());
 			}
+			
+			log.info("create users");
+			User user1 = new User("user", "user@git.com",
+			"$2a$06$3jYRJrg0ghaaypjZ/.g4SethoeA51ph3UD4kZi9oPkeMTpjKU5uo6", "USER");
+			User user2 = new User("admin", "admin1@git.com",
+			"$2a$10$0MMwY.IQqpsVc1jC8u7IJ.2rT8b0Cd3b3sfIBGV2zfgnPGtT4r0.C", "ADMIN");
+			userRepository.save(user1);
+			userRepository.save(user2);
+			
+			log.info("fetch all users");
+			for (User user : userRepository.findAll()) {
+				log.info(user.toString());
+			}
+			
 
 		};
 	}

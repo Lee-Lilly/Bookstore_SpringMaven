@@ -23,8 +23,17 @@ public class BookstoreController {
 	@Autowired
 	private CategoryRepository categoryRepository;
 	
+	@Autowired
+	private UserRepository userRepository;
+	
+	//login
+    @RequestMapping(value= {"/login"})
+    public String login() {	
+        return "login";
+    }     
+	
 	// Show all books
-	@RequestMapping(value= {"/", "/bookstore"})
+	@RequestMapping(value= {"/bookstore","/"})
     public String bookList(Model model) {	
         model.addAttribute("books", bookRepository.findAll());
         return "bookstore";
@@ -62,15 +71,7 @@ public class BookstoreController {
     	}	
     	return "redirect:bookstore";
     } 
- 
-    //Delete a book record
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    @PreAuthorize("hasRole('ADMIN')") //"delete" method must have authentication of "ADMIN"
-    public String deleteBook(@PathVariable("id") Long bookId, Model model) {
-    	bookRepository.deleteById(bookId);
-        return "redirect:../bookstore";
-    }
-   
+  
     //Edit a book with category drop down list ordered by name
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
     public String editBook(@PathVariable("id") Long bookId, Model model){
@@ -78,5 +79,25 @@ public class BookstoreController {
     	model.addAttribute("categories", categoryRepository.findByOrderByNameAsc());
         return "editbook";
     }
+    
+    //Delete books and show user list only for ADMIN
+    
+    //Delete a book record
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    @PreAuthorize("hasAuthority('ADMIN')") //"delete" method must have authentication of "ADMIN"
+    public String deleteBook(@PathVariable("id") Long bookId, Model model) {
+    	bookRepository.deleteById(bookId);
+        return "redirect:../bookstore";
+    }
+       
+    // Show all users
+ 	@RequestMapping(value= {"/userlist"})
+ 	@PreAuthorize("hasAuthority('ADMIN')")
+     public String userList(Model model) {	
+         model.addAttribute("users", userRepository.findAll());
+         return "userlist";
+     }
+   
+    
     
 }
