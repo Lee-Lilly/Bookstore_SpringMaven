@@ -12,12 +12,12 @@
      <div class="col-md-4">
 		<form th:object="${signupform}" th:action="@{/saveUser}" action="#" method="post">
 			<div>
-				<label> Username :<input type="text" th:field="*{username}" class="form-control"/></label>
-				<p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username Error</p>	
+				<label> User name :<input type="text" th:field="*{userName}" class="form-control"/></label>
+				<p th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">User name Error</p>	
 			</div>
 			<div>
 				<label> Email :<input type="text" th:field="*{email}" class="form-control"/></label>
-				<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Username Error</p>	
+				<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">User name Error</p>	
 			</div>
 			<div>
 				<label> Password :<input type="password" th:field="*{password}" class="form-control"/></label>
@@ -28,7 +28,7 @@
 				<p th:if="${#fields.hasErrors('passwordCheck')}" th:errors="*{passwordCheck}">Password Match Error</p>	
 			</div>
 			
-			<input type="submit" class="btn btn-primary" value="Signup"></input>		
+			<input type="submit" class="btn btn-primary" value="Sign up"></input>		
 		</form>
 	</div>
 </div>

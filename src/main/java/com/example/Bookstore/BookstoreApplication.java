@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +21,7 @@ public class BookstoreApplication {
 	
 	@SuppressWarnings("unused")
 	@Bean
-	public CommandLineRunner bookStore(BookRepository bookRepository, CategoryRepository categoryRepository, UserRepository userRepository) {
+	public CommandLineRunner bookStore(BookRepository bookRepository, CategoryRepository categoryRepository, UserRepository userRepository, LoanRepository loanRepository) {
 		return (args) -> {
 			log.info("give a couple of categories");
 			Category category_Travel= categoryRepository.save(new Category("Travel"));
@@ -37,10 +38,10 @@ public class BookstoreApplication {
 			Category category_Psychology= categoryRepository.save(new Category("Psychology"));
 			
 			log.info("save a couple of books");
-			bookRepository.save(new Book("Lonely Planet India", "Lonely Planet","9781787013698", category_Travel , 2016));
-			bookRepository.save(new Book("French for Dummies", "Laura K. Lawless", "9781118004647", category_Education, 2017));
-			bookRepository.save(new Book("Alvar Aalto tunnissa", "Roope Lipasti","9789525827729", category_Biography, 2019));
-			bookRepository.save(new Book("Mikael Agricola tunnissa", "Roope Lipasti","9789526640099", category_Biography, 2019 ));
+			Book book1 = bookRepository.save(new Book("Lonely Planet India", "Lonely Planet","9781787013698", category_Travel , 2016));
+			Book book2 = bookRepository.save(new Book("French for Dummies", "Laura K. Lawless", "9781118004647", category_Education, 2017));
+			Book book3 = bookRepository.save(new Book("Alvar Aalto tunnissa", "Roope Lipasti","9789525827729", category_Biography, 2019));
+			Book book4 = bookRepository.save(new Book("Mikael Agricola tunnissa", "Roope Lipasti","9789526640099", category_Biography, 2019));
 			bookRepository.save(new Book("Lonely Planet Portugal", "Lonely Planet","9781787010185", category_Travel, 2017));
 			bookRepository.save(new Book("Travel through history - The Balkan", "Julia Worker","9781785385148", category_Travel, 2016));
 			bookRepository.save(new Book("Phenomenal Learning from Finland ", "Kirsti Lonka","9789513774301", category_Education, 2016));
@@ -56,16 +57,34 @@ public class BookstoreApplication {
 			}
 			
 			log.info("create users");
-			User user1 = new User("user", "user@git.com",
+			User admin = new User("admin", "admin1@git.com",
+					"$2a$10$0MMwY.IQqpsVc1jC8u7IJ.2rT8b0Cd3b3sfIBGV2zfgnPGtT4r0.C", "ADMIN");
+			User user1 = new User("sam", "sam@github.com",
 			"$2a$06$3jYRJrg0ghaaypjZ/.g4SethoeA51ph3UD4kZi9oPkeMTpjKU5uo6", "USER");
-			User user2 = new User("admin", "admin1@git.com",
-			"$2a$10$0MMwY.IQqpsVc1jC8u7IJ.2rT8b0Cd3b3sfIBGV2zfgnPGtT4r0.C", "ADMIN");
+			User user2 = new User("kiki", "kiki@github.com",
+					"$2a$06$3jYRJrg0ghaaypjZ/.g4SethoeA51ph3UD4kZi9oPkeMTpjKU5uo6", "USER");
+			User user3 = new User("user", "user@github.com",
+					"$2a$06$3jYRJrg0ghaaypjZ/.g4SethoeA51ph3UD4kZi9oPkeMTpjKU5uo6", "USER");
+			
 			userRepository.save(user1);
 			userRepository.save(user2);
+			userRepository.save(user3);
+			userRepository.save(admin);
+						
+			log.info("create loans");
 			
-			log.info("fetch all users");
-			for (User user : userRepository.findAll()) {
-				log.info(user.toString());
+			Loan loan1 = new Loan(admin, book1, new java.util.Date());
+			loanRepository.save(loan1);
+			Loan loan2 = new Loan(user2, book3, new java.util.Date());
+			loanRepository.save(loan2);
+			Loan loan3 = new Loan(user1, book2, new java.util.Date());
+			loanRepository.save(loan3);
+			Loan loan4 = new Loan(user1, book4, new java.util.Date());
+			loanRepository.save(loan4);
+			
+			log.info("fetch all loans");
+			for (Loan loan : loanRepository.findAll()) {
+				log.info(loan.toString());
 			}
 			
 

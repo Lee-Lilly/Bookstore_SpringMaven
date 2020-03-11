@@ -25,12 +25,12 @@ public class Book {
 	private String isbn;  
 	private Integer year;
 	
+	
 	@ManyToOne
 	@JsonIgnore
     @JoinColumn(name="category_id")
-	
 	private Category category;
-	
+			
 	public Book() {}
 	
 	public Book(String title, String author, String isbn, Category category, Integer year) {
@@ -53,17 +53,18 @@ public class Book {
 	public String getTitle() {
 		return title;
 	}	
+	
+	public String getAuthor(){
+		return author;
+	}
+	
 	public String getIsbn() {
 		return isbn;
 	}
 	
 	public Integer getYear() {
 		return year;
-	}
-	
-	public String getAuthor(){
-		return author;
-	}
+	}	
 	
 	public void setTitle(String title) {
 		this.title = title;

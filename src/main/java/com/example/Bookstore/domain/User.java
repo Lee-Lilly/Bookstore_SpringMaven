@@ -5,17 +5,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+
 
 @Entity
+@Table(name = "users") //database name corresponding to this Entity
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false, updatable = false)
 	private Long id;
 	
-	// Username with unique constraint
-	@Column(name = "username", nullable = false, unique = true)
-	private String username;
+	// user name with unique constraint
+	@Column(name = "name", nullable = false, unique = true)
+	private String name;
 	
 	@Column(name = "email", nullable = false)
 	private String email;
@@ -26,13 +29,14 @@ public class User {
 	@Column(name = "role", nullable = false)
 	private String role;
 	
+	
 	public User() {
 		
 	}
 	
-	public User(String username, String email, String passwordHash, String role) {
+	public User(String name, String email, String passwordHash, String role) {
 		super();
-		this.username = username;
+		this.name = name;
 		this.email = email;
 		this.passwordHash = passwordHash;
 		this.role = role;
@@ -54,12 +58,12 @@ public class User {
 		this.email = email;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getName() {
+		return name;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setName(String name) {
+		this.name = name;
 	}	
 
 	public String getPasswordHash() {
@@ -79,8 +83,8 @@ public class User {
 	}
 	
 	@Override
-	public String toString() {
-		return "User [id=" + id + ", name= " + username + ", email= " + email + ", password= " + passwordHash + ", role= " + role + "]";
-		}
-		
+	public String toString() {		
+		return "User [id=" + id + ", username= " + name + ", email= " + email + ", password= " + passwordHash + ", role= " + role + "]";
+	}
+
 }

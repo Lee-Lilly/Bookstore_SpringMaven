@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+
 import com.example.Bookstore.domain.SignupForm;
 import com.example.Bookstore.domain.User;
 import com.example.Bookstore.domain.UserRepository;
@@ -21,9 +22,10 @@ import com.example.Bookstore.domain.UserRepository;
 public class UserController {
 	@Autowired
     private UserRepository userRepository; 
+
 	
 	@RequestMapping(value = "signup")
-    public String addStudent(Model model){
+    public String addUser(Model model){
     	model.addAttribute("signupform", new SignupForm());
         return "signup";
     }	
@@ -48,11 +50,12 @@ public class UserController {
 	
 		    	User newUser = new User();
 		    	newUser.setPasswordHash(hashPwd);
-		    	newUser.setUsername(signupForm.getUsername());
+		    	newUser.setName(signupForm.getUserName());
 		    	newUser.setEmail(signupForm.getEmail());
 		    	newUser.setRole(signupForm.getRole());
+		    
 		    	
-		    	if (userRepository.findByUsername(signupForm.getUsername()) == null) { // Check if user exists
+		    	if (userRepository.findByName(signupForm.getUserName()) == null) { // Check if user exists
 		    		userRepository.save(newUser);
 		    	}
 		    	else {
@@ -69,6 +72,7 @@ public class UserController {
     		return "signup";
     	}
     	return "redirect:/login";    	
-    }    
-
+    }  
+	 
 }
+	
