@@ -11,29 +11,32 @@
 	<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
 	<br>
 	<h2>Your collection of borrowed books: </h2> 
-    	<br>    	        	
-	    <table  class= "table table-striped table-bordered text-center table-responsive" id="collection">
-	    	<thead>
-				<tr>
-					<th class="text-center">Loan ID</th>
-				    <th class="text-center">Borrowed Books</th>
-				    <th class="text-center">Time</th>
-				    <th class="text-center">Return</th>
-				</tr>
-			</thead> 
-			<tbody>
-		    	<tr th:each = "loan : ${loans}">
-		    		<td th:text="${loan.id}"></td>
-		    		<td th:text="${loan.book.getTitle()}"></td>
-		    		<td th:text="${loan.date}"></td>
-		    		<td><a th:href="@{/return/{id}(id=${loan.id})}" class="btn btn-warning"  data-toggle="tooltip" title="Return"><i class="fas fa-book"></i></a></td>
-		    		
-		    	</tr>
+    	<br> 
+    	<div th:switch="${#lists.size(loans)}">
+	    	<h4 th:case="'0'" class="alert alert-warning">No borrowed books!</h4> 
+	    	<br>
+	    	<table th:case="*" class= "table table-striped table-bordered text-center table-responsive" id="collection">
+		    	<thead>
+					<tr>
+						<th class="text-center">Loan ID</th>
+					    <th class="text-center">Borrowed Books</th>
+					    <th class="text-center">Time</th>
+					    <th class="text-center">Expired On</th>
+					    <th class="text-center">Return</th>
+					</tr>
+				</thead> 
+				<tbody>
+					<tr  th:each = "loan : ${loans}">
+			    		<td th:text="${loan.id}"></td>
+			    		<td th:text="${loan.book.getTitle()}"></td>
+			    		<td th:text="${#temporals.format(loan.date, 'dd-MM-yyyy HH:mm:ss')}"></td>
+			    		<td th:text="${#temporals.format(loan.date.plusMinutes(2), 'dd-MM-yyyy HH:mm:ss')}"></td>
+			    		<td><a th:href="@{/return/{id}(id=${loan.id})}" class="btn btn-warning"  data-toggle="tooltip" title="Return"><i class="fas fa-book"></i></a></td>
+			    	</tr>
 	    	</tbody> 	
-	     </table> 
-	     <form th:action="@{/bookstore}" method="post" style="float: right;">
-			<input type="submit" class="btn btn-info" value="Back to book store"/>
-		</form>   		  
+	     </table>
+	     <a href="/bookstore" class="btn btn-success" style="float:right">Continue</a>   
+	    </div>	  
 	</div>
 </body>
 </html>

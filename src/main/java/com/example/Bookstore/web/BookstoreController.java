@@ -12,7 +12,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.security.Principal;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,11 +51,11 @@ public class BookstoreController {
 	 	//we need to annotate @RequestParam(value = "SAME TEXT").
 	    @RequestMapping(value = "/search")
 	    public String bookSearch(@RequestParam(value = "byWhat") String byWhat, @RequestParam(value = "input") String input, Model model) {	      	
-	    	if (byWhat == "year") {//parseInt() to convert String to Integer
+	    	if (byWhat.equals("year")) {//parseInt() to convert String to Integer
 	    		model.addAttribute("books", bookRepository.findByYear(Integer.parseInt(input)));
-	    	} else if (byWhat == "title"){	
+	    	} else if (byWhat.equals("title")){	
 	    		model.addAttribute("books", bookRepository.findByTitle(input));
-	    	} else if(byWhat =="category") {
+	    	} else if(byWhat.equals("category")) {
 	    		model.addAttribute("books", bookRepository.findByCategoryName(input));
 	    	}    	
 	    	return "bookstore";
@@ -88,7 +89,7 @@ public class BookstoreController {
 	    		System.out.println("I would like to read book: " + optional.get().getTitle());	
 	    		loan.setBook(optional.get());
 	    	}
-	    	loan.setDate(new Date());
+	    	loan.setDate(LocalDateTime.now());
 	    	loanRepository.save(loan);
 	    	return "redirect:../collection";
 	    }
@@ -102,7 +103,7 @@ public class BookstoreController {
  	    }
  		
  		//User can return a book
-	    @RequestMapping(value = "/return/{id}", method = RequestMethod.GET)
+	    @RequestMapping(value = {"/return/{id}"}, method = RequestMethod.GET)
 	    public String returnBook(@PathVariable("id") Long loanId, Principal principal, Model model) {
 	    	loanRepository.deleteById(loanId);
 	        return "redirect:../collection";
@@ -142,15 +143,29 @@ public class BookstoreController {
 	    	return "redirect:bookstore";
 	    }
 	    
-	    //Delete a book record
-	    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+	    //Delete a book record (first: delete its related borrowing records on loan system)
+	    @RequestMapping(value = "/delete/{id}")
 	    @PreAuthorize("hasAuthority('ADMIN')") //"delete" method must have authentication of "ADMIN"
-	    public String deleteBook(@PathVariable("id") Long bookId, Model model) {
-	    	bookRepository.deleteById(bookId);
+	    public String deleteBook(@PathVariable("id") Long bookId, RedirectAttributes redirectAttributes) {
+	    	//create a list of loan which are related to this bookId
+	    	List<Loan> purgeLoans = loanRepository.findByBookId(bookId);
+	    	
+	    	for (Loan loan : purgeLoans) { //for each loan in the purge list 
+    			Long purgeId = loan.getId(); //get loan id
+    			loanRepository.deleteById(purgeId); //delete the loan record
+	    	}
+	    	//delete book record in the book repository
+	    	Optional<Book> optional =bookRepository.findById(bookId);
+	    	if(optional.isPresent()){
+	    		System.out.println("Book: " + optional.get().getTitle() + " will be deleted");
+	    		bookRepository.deleteById(bookId);//delete the book
+	    		//alert message sends to ADMIN session bookstore
+	    		redirectAttributes.addFlashAttribute("delete_alert", "Book: " + optional.get().getTitle() + " is deleted.");    		
+	    	}   	
 	        return "redirect:../bookstore";
 	    }
 	    
-	    //ADMIN also can check users & loan list 
+	    //ADMIN also can list users & loans 
 	 	@RequestMapping(value= {"/userlist"})
 	 	@PreAuthorize("hasAuthority('ADMIN')")
 	     public String userList(Model model) {	
@@ -165,21 +180,74 @@ public class BookstoreController {
 	      return "userlist";
 	    }
 	 	
+	 	//ADMIN can force return overdue loans
 	 	@RequestMapping(value= {"/loanlist"})
 	 	@PreAuthorize("hasAuthority('ADMIN')")
-	 	public String loanList(Model model) {	
-	 	     model.addAttribute("loans", loanRepository.findAll());
-	 	     return "loanlist";
+	 	public String loanList(Model model){	
+	 		//create list of overdue loans
+	 		List<Long> overdues = new ArrayList<Long>();
+	 		//for each loan check overdue
+	    	for (Loan loan : loanRepository.findAll()) { 
+	    		//For test reason, overdue is set as period of 2 minutes
+	    		if (loan.getDate().plusMinutes(2).isBefore(LocalDateTime.now())) {
+	    			System.out.println("loan ID: " + loan.getId() + "  " + loan.getBook().getTitle() + "book is overdue.");    			
+	    			
+	    			//add overdue loan to the list			
+	    			Long overdue = loan.getId();
+	    			overdues.add(overdue);
+	    			
+	    			//Option: automatically terminate the loan by deleting loan id from loan repository
+	    			//loanRepository.deleteById(overdue);
+	    		}	    		
+	    	}
+	    	System.out.println(overdues);     	
+			model.addAttribute("loans",loanRepository.findAll());
+			//send overdue list to view, so that a "force return" button will turn active whenever it is an overdue loan. 
+			model.addAttribute("overdues", overdues);
+		    return "loanlist";
  	     }
- 	 	
- 	 	@RequestMapping("/searchLoan")
- 	 	@PreAuthorize("hasAuthority('ADMIN')")
- 	    public String loans(@RequestParam(value = "username") String user_name, Model model) {
- 	      model.addAttribute("loans", loanRepository.findByUserName(user_name));
- 	      return "loanlist";
- 	    }
-
 	 	
+	 	@RequestMapping("/searchLoan")
+ 	 	@PreAuthorize("hasAuthority('ADMIN')")
+ 	    public String loansUser(@RequestParam(value="by") String by, @RequestParam(value="input") String input, Model model) { 		
+ 		 	ArrayList<Long> overdues = new ArrayList<Long>();
+ 		 	if(by.equals("username")) {
+ 		 		for (Loan loan : loanRepository.findByUserName(input)) { 
+		    		//For test reason, overdue is set as period of 2 minutes
+		    		if (loan.getDate().plusMinutes(2).isBefore(LocalDateTime.now())) {
+		    			//add overdue loan to the list			
+		    			Long overdue = loan.getId();
+		    			overdues.add(overdue);    		
+		    		}	    		
+		    	}
+ 		 		model.addAttribute("loans",loanRepository.findByUserName(input));
+ 		 		model.addAttribute("overdues", overdues);
+ 		 	}
+ 		 	else if(by.equals("title")) {
+ 	 			//for each loan check overdue
+		    	for (Loan loan : loanRepository.findByBookTitle(input)) { 
+		    		//For test reason, overdue is set as period of 2 minutes
+		    		if (loan.getDate().plusMinutes(2).isBefore(LocalDateTime.now())) {
+		    			//add overdue loan to the list			
+		    			Long overdue = loan.getId();
+		    			overdues.add(overdue);    		
+		    		}	    		
+		    	}
+		    	model.addAttribute("loans",loanRepository.findByBookTitle(input));
+ 		 		model.addAttribute("overdues", overdues);
+ 	 	}	 	
+    	return "loanlist";
+	 }	
+	
+ 	 	
+ 	 	//ADMIN has privilege access to "force return"
+	    @RequestMapping(value = {"/forceReturn/{id}"}, method = RequestMethod.GET)
+	    @PreAuthorize("hasAuthority('ADMIN')")
+	    public String forceReturn(@PathVariable("id") Long loanId, Model model) {
+	    	loanRepository.deleteById(loanId);
+	        return "redirect:../loanlist";
+	    }
+ 	 		 	
 	 	
 	//Following are Restful service and Rest API search
 	//Returns a json file to http response body

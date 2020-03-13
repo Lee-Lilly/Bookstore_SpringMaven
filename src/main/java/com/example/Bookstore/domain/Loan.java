@@ -1,7 +1,6 @@
 package com.example.Bookstore.domain;
 
-import java.util.Date;
-
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,12 +31,12 @@ public class Loan {
 	private User user;
 	
 	@Column(name="time")
-	private Date date;  
+	private LocalDateTime date;  
 	
 	
 	public Loan() {}
 	
-	public Loan(User user, Book book, Date date) {
+	public Loan(User user, Book book, LocalDateTime date) {
 		this.user = user;
 		this.book = book;
 		this.date = date;
@@ -67,11 +66,11 @@ public class Loan {
 		this.book = book;
 	}
 	
-	public Date getDate() {
+	public LocalDateTime getDate() {
 		return date;
 	}	
 	
-	public void setDate(Date date) {
+	public void setDate(LocalDateTime date) {
 		this.date = date;
 	}
 	

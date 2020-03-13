@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,26 +62,22 @@ public class BookstoreApplication {
 					"$2a$10$0MMwY.IQqpsVc1jC8u7IJ.2rT8b0Cd3b3sfIBGV2zfgnPGtT4r0.C", "ADMIN");
 			User user1 = new User("sam", "sam@github.com",
 			"$2a$06$3jYRJrg0ghaaypjZ/.g4SethoeA51ph3UD4kZi9oPkeMTpjKU5uo6", "USER");
-			User user2 = new User("kiki", "kiki@github.com",
-					"$2a$06$3jYRJrg0ghaaypjZ/.g4SethoeA51ph3UD4kZi9oPkeMTpjKU5uo6", "USER");
-			User user3 = new User("user", "user@github.com",
+			User user2 = new User("user", "user@github.com",
 					"$2a$06$3jYRJrg0ghaaypjZ/.g4SethoeA51ph3UD4kZi9oPkeMTpjKU5uo6", "USER");
 			
 			userRepository.save(user1);
 			userRepository.save(user2);
-			userRepository.save(user3);
 			userRepository.save(admin);
 						
 			log.info("create loans");
 			
-			Loan loan1 = new Loan(admin, book1, new java.util.Date());
+			Loan loan1 = new Loan(admin, book1, LocalDateTime.now());
 			loanRepository.save(loan1);
-			Loan loan2 = new Loan(user2, book3, new java.util.Date());
+			Loan loan2 = new Loan(user2, book3, LocalDateTime.now());
 			loanRepository.save(loan2);
-			Loan loan3 = new Loan(user1, book2, new java.util.Date());
+			Loan loan3 = new Loan(user1, book2, LocalDateTime.now());
 			loanRepository.save(loan3);
-			Loan loan4 = new Loan(user1, book4, new java.util.Date());
-			loanRepository.save(loan4);
+			
 			
 			log.info("fetch all loans");
 			for (Loan loan : loanRepository.findAll()) {

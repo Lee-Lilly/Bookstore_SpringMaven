@@ -4,6 +4,9 @@
     <title>New Book Store</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
    	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+   	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+   	<!--script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script-->
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <script src="https://kit.fontawesome.com/0fa32f6844.js"></script>
 </head>
 <body>
@@ -11,9 +14,9 @@
 	    	<h1 th:inline="text">Welcome [[${#httpServletRequest.remoteUser}]]!</h1>
 	    	<form th:action="@{/search}">
 				<select th:name="byWhat">
-    				<option  value="year" th:text="Year" ></option>
     				<option  value="title" th:text="Title"></option>
-    				<option  value="category" th:text="Cateogry"></option>
+    				<option  value="category" th:text="Category"></option>
+    				<option  value="year" th:text="Year" ></option>
 				</select>
 				<input type="text" placeholder="Search ..." th:name="input">
 	      		<button type="submit"><i class="fa fa-search"></i></button>
@@ -24,8 +27,11 @@
 		    	<a sec:authorize="hasAuthority('ADMIN')" href="/userlist" class="btn btn-info" style="float:right;">User List</a> 	
 				<a sec:authorize="hasAuthority('ADMIN')" href="/add" class="btn btn-info">Add Book</a>
 	    	</div> 
-	    
-       		<div th:if="${message}" class="alert alert-warning alert-dismissible" aria-hidden ="true">
+	    	<div th:if="${delete_alert}" class="alert alert-danger alert-dismissible fade show" aria-label="Close">
+        		<button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        		 <span th:text="${delete_alert}"></span>
+    		</div>
+       		<div th:if="${message}" class="alert alert-primary alert-dismissible fade show" aria-label="Close">
         		<button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
         		 <span th:text="${message}"></span>
     		</div>
