@@ -9,14 +9,33 @@
 <body>
 	<div class="container"> 
 	<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1> 
-		 <form th:action="@{/searchLoan}" method="post">
-		 	<select th:name="by">
-   				<option  value="title" th:text="Title"></option>
-   				<option  value="username" th:text="User_name"></option>
-    		</select>		
-				<input type="text" placeholder="Search.." th:name="input">
-	      		<button type="submit"><i class="fa fa-search"></i></button>
-		</form> 	
+	<nav class="navbar navbar-expand-lg navbar-light justify-content-between" style="background-color: #e3f2fd;">
+                 <form th:action="@{/searchLoan}" method="post">
+				 	<select th:name="by">
+		   				<option  value="title" th:text="Title"></option>
+		   				<option  value="username" th:text="User_name"></option>
+		    		</select>		
+						<input type="text" placeholder="Search.." th:name="input">
+			      		<button type="submit"><i class="fa fa-search"></i></button>
+				</form> 
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="nav navbar-nav ml-auto">
+                    	<li class="nav-item active">
+                            <a href="/bookstore"  class="nav-link">Home</a>
+                        </li>        
+                        <li class="nav-item active">
+                            <a href="/collection"  class="nav-link">My collection</a>
+                        </li>  
+                        <li class="nav-item active">
+                        	 <a sec:authorize="hasAuthority('ADMIN')" href="/userlist" class="nav-link">User List</a>
+                        </li>				      
+                    	 <li class="nav-item active"> 
+					      	<form th:action="@{/logout}" method="post">				
+             				 	<input type="submit" class="btn btn-info" value="Sign Out"/>
+							</form>	  				     
+                	</ul>
+                </div>
+            </nav>	
     	<br>
     	<div th:switch="${#lists.size(loans)}">
 	    	<h4 th:case="'0'" class="alert alert-warning">No borrowed books!</h4>    
@@ -48,10 +67,7 @@
 		    	</tr>
 	    	</tbody> 	
 	     </table>
-	    </div> 
-	     <form th:action="@{/bookstore}" method="post" style="float: right;">
-			<input type="submit" class="btn btn-info" value="Back to book store"/>
-		</form>   		  
+	    </div>   		  
 	</div>
 </body>
 </html>
