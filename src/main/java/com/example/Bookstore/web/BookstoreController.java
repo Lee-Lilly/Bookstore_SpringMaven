@@ -146,22 +146,32 @@ public class BookstoreController {
 	    //Delete a book record (first: delete its related borrowing records on loan system)
 	    @RequestMapping(value = "/delete/{id}")
 	    @PreAuthorize("hasAuthority('ADMIN')") //"delete" method must have authentication of "ADMIN"
-	    public String deleteBook(@PathVariable("id") Long bookId, RedirectAttributes redirectAttributes) {
-	    	//create a list of loan which are related to this bookId
-	    	List<Loan> purgeLoans = loanRepository.findByBookId(bookId);
+	    public String deleteBook(@PathVariable("id") Long bookId, Model model, RedirectAttributes redirectAttributes) {
 	    	
-	    	for (Loan loan : purgeLoans) { //for each loan in the purge list 
-    			Long purgeId = loan.getId(); //get loan id
-    			loanRepository.deleteById(purgeId); //delete the loan record
+	    	//get a list of loan which are related to this bookId
+	    	List<Loan> bookInloans = loanRepository.findByBookId(bookId);
+	 
+	    	//option delete the book related loan
+//	    	for (Loan loan : purgeLoans) { //for each loan in the purge list 
+//    			Long purgeId = loan.getId(); //get loan id
+//    			loanRepository.deleteById(purgeId); //delete the loan record
+//	    	}
+	    	
+	    	if(bookInloans.isEmpty()){ 
+	    		//ONLY not-in-loan books are able to be deleted
+	    		//delete book record in the book repository
+		    	Optional<Book> optional =bookRepository.findById(bookId);
+		    	if(optional.isPresent()){
+		    		System.out.println("Book: " + optional.get().getTitle() + " will be deleted");
+		    		bookRepository.deleteById(bookId);//delete the book
+		    		//alert message sends to ADMIN session bookstore
+		    		redirectAttributes.addFlashAttribute("delete_alert", "Book: " + optional.get().getTitle() + " is deleted.");    		
+		    	}
 	    	}
-	    	//delete book record in the book repository
-	    	Optional<Book> optional =bookRepository.findById(bookId);
-	    	if(optional.isPresent()){
-	    		System.out.println("Book: " + optional.get().getTitle() + " will be deleted");
-	    		bookRepository.deleteById(bookId);//delete the book
+	    	else{
 	    		//alert message sends to ADMIN session bookstore
-	    		redirectAttributes.addFlashAttribute("delete_alert", "Book: " + optional.get().getTitle() + " is deleted.");    		
-	    	}   	
+	    		redirectAttributes.addFlashAttribute("delete_alert", "Can not be deleted! Book is in loan");       		
+	    	}	    	
 	        return "redirect:../bookstore";
 	    }
 	    
