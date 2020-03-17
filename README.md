@@ -11,5 +11,5 @@
 # CrudRepository: categoryRepository
 # CrudRepository: userRepository
 # CrudRepository: loanRepository
-# Security ADMIN role: ADD, UPDATE, DELETE book records; CHECK users repository; CHECK loan repository;
+# Security ADMIN role: ADD, UPDATE, DELETE book records; CHECK users repository; CHECK loan repository; FORCE RETURN overdue loans;
 # Security USER role: SEARCH books; BORROW books; RETURN books; SEARCH own collection;  

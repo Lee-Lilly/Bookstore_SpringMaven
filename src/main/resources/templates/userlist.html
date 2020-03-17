@@ -21,6 +21,7 @@
 					<th class="text-center">Name</th>
 				    <th class="text-center">Email</th>
 				    <th class="text-center">Role</th>
+				    <th class="text-center">Member Since</th>
 				</tr>
 			</thead> 
 			<tbody>
@@ -29,6 +30,7 @@
 		    		<td th:text="${user.name}"></td>
 		    		<td th:text="${user.email}"></td>
 		    		<td th:text="${user.role}"></td>
+		    		<td th:text="${#dates.year(#dates.createNow())}"></td>
 	    	</tbody> 	
 	     </table> 
 	     <form th:action="@{/bookstore}" method="post" style="float: right;">

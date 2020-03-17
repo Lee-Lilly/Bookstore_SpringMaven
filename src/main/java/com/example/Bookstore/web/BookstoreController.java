@@ -188,8 +188,8 @@ public class BookstoreController {
 	 		List<Long> overdues = new ArrayList<Long>();
 	 		//for each loan check overdue
 	    	for (Loan loan : loanRepository.findAll()) { 
-	    		//For test reason, overdue is set as period of 2 minutes
-	    		if (loan.getDate().plusMinutes(2).isBefore(LocalDateTime.now())) {
+	    		//For test reason, overdue is set as period of 5 minutes
+	    		if (loan.getDate().plusMinutes(5).isBefore(LocalDateTime.now())) {
 	    			System.out.println("loan ID: " + loan.getId() + "  " + loan.getBook().getTitle() + "book is overdue.");    			
 	    			
 	    			//add overdue loan to the list			

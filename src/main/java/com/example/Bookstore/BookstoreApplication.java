@@ -45,7 +45,7 @@ public class BookstoreApplication {
 			Book book4 = bookRepository.save(new Book("Mikael Agricola tunnissa", "Roope Lipasti","9789526640099", category_Biography, 2019));
 			bookRepository.save(new Book("Lonely Planet Portugal", "Lonely Planet","9781787010185", category_Travel, 2017));
 			bookRepository.save(new Book("Travel through history - The Balkan", "Julia Worker","9781785385148", category_Travel, 2016));
-			bookRepository.save(new Book("Phenomenal Learning from Finland ", "Kirsti Lonka","9789513774301", category_Education, 2016));
+			bookRepository.save(new Book("Phenomenal Learning from Finland", "Kirsti Lonka","9789513774301", category_Education, 2016));
 			
 			log.info("fetch all categories");
 			for (Category category : categoryRepository.findAll()) {
@@ -73,10 +73,12 @@ public class BookstoreApplication {
 			
 			Loan loan1 = new Loan(admin, book1, LocalDateTime.now());
 			loanRepository.save(loan1);
-			Loan loan2 = new Loan(user2, book3, LocalDateTime.now());
+			Loan loan2 = new Loan(user1, book2, LocalDateTime.now());
 			loanRepository.save(loan2);
-			Loan loan3 = new Loan(user1, book2, LocalDateTime.now());
-			loanRepository.save(loan3);
+			Loan loan3 = new Loan(user2, book3, LocalDateTime.now());
+			loanRepository.save(loan3);			
+			Loan loan4 = new Loan(admin, book4, LocalDateTime.now());
+			loanRepository.save(loan4);
 			
 			
 			log.info("fetch all loans");
