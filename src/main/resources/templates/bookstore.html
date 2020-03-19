@@ -81,7 +81,7 @@
 		 				<a th:href="@{/delete/{id}(id=${book.id})}" class="btn btn-danger"  data-toggle="tooltip" title="Delete"><i class="fas fa-trash-alt"></i></a>
 		 			</td>
 		 			<td sec:authorize="hasAuthority('ADMIN')">
-		 				<a th:href="@{/edit/{id}(id=${book.id})}" class="btn btn-primary" data-toggle="tooltip" title="Edit"><i class="fas fa-edit"></i></a>
+		 				<a th:href="@{/edit/{id}(id=${book.id})}" class="btn btn-primary"  onclick="return confirm('Are you sure?') ? true : false;" data-toggle="tooltip" title="Edit"><i class="fas fa-edit"></i></a>
 		 			</td>
 		 			<td>
 		 				<a th:href="@{/borrow/{id}(id=${book.id})}" class="btn btn-success" data-toggle="tooltip" title="Borrow"><i class="fas fa-glasses"></i></a>
