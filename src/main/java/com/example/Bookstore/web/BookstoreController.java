@@ -165,7 +165,7 @@ public class BookstoreController {
 		    		System.out.println("Book: " + optional.get().getTitle() + " will be deleted");
 		    		bookRepository.deleteById(bookId);//delete the book
 		    		//alert message sends to ADMIN session bookstore
-		    		redirectAttributes.addFlashAttribute("delete_alert", "Book: " + optional.get().getTitle() + " is deleted.");    		
+		    		redirectAttributes.addFlashAttribute("delete_alert", "Book is deleted: " + optional.get().getTitle());    		
 		    	}
 	    	}
 	    	else{
